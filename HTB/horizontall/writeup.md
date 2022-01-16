@@ -78,7 +78,7 @@ with:
   `http://api-prod/horizontall.htb/reviews`
 
   and the next thing i did was...\
-  continue reconning...\
+  continue reconning...
 
   :|
 
@@ -328,11 +328,11 @@ after getting the user flag... now we need to privilege escalate our way to root
 
   ![gave up1](pics/Screenshot_20220116_105904-1.png)
 
-  since its seems to complex and would have taken alot of time... and it did... becs its very uncomfortable to type and it gets doubled
+  since its seems to complex and would have taken alot of time... and it did... becs its very uncomfortable to type because everytune you typed a single letter it gets doubled or even copied a text it got doubled its very anoying
 
   ![finally got root shell](pics/additionalEdits/2022-01-16%2017_30_01.png)
 
-  but then in the end i still got the root ssh
+  but in the end... i still got the root ssh
 
   ![final root ssh](pics/Screenshot_20220116_111142.png)
 

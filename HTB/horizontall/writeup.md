@@ -8,8 +8,6 @@ horizontall is a box that you will want to enumerate eveything or atleast tried 
 
 without further ado lets get started
 
----------------
-
 ## setup
 
 first of all lets connect to the horizontall machine
@@ -26,7 +24,6 @@ with:
 
 ![add dns](pics/Screenshot_20220116_085121.png)
 
----------------
 
 ## initial recon
 
@@ -107,7 +104,6 @@ with:
 
   `<ip addr> <domain name>.htb api-prod.<domain name>.htb`
 
----------------
 
 ## user
 
@@ -204,4 +200,132 @@ after getting disapointed because there is nothing important or interesting on t
 
 - ### user flag
 
-  after getting the ssh next i tried to 
+  after getting the ssh next i tried to open the usual flag spot for htb (usually its in the /home/user/user.txt)
+
+  ![check for user.txt on the usual spot and cat it](pics/additionalEdits/2022-01-16%2016_15_32.png)
+
+  and... it is
+
+## root
+
+after getting the user flag... now we need to privilege escalate our way to root, or atleast find a way to run a command on root privilege
+
+- ### root recon
+
+  yes another recon and it is alot of reconning but, atleast this time we use another tool and its called [linpeas](https://linpeas.sh/)
+
+  so first of all lets upload the linpeas into the machine, this time i used the strapi to upload it and i will spare you the detail since i only drag and drop the linpeas script
+
+  and after i found the script i just copy it and rename it to the original file
+
+  ![uploading linpeas](pics/additionalEdits/2022-01-16%2016_27_41.png)
+
+  after getting the linpeas into the machine i just need to change the permission and run it and output it to a `tempfile.txt`
+
+  ![running linpeas.sh](pics/additionalEdits/2022-01-16%2016_32_12.png)
+
+  i then just cat the output file and pipe it to less so that i can scroll up and down on the output and also -R to add color to it
+
+  and now i just need to find everything that is in red and check if there are any vulnerability on it
+
+  ![all the reds in the output1](pics/additionalEdits/2022-01-16%2016_37_01.png)
+
+  ![all the reds in the output2](pics/additionalEdits/2022-01-16%2016_37_20.png)
+
+  ![all the reds in the output3](pics/additionalEdits/2022-01-16%2016_37_53.png)
+
+  ![all the reds in the output4](pics/additionalEdits/2022-01-16%2016_38_36.png)
+
+  and after trying and googling all the red labled texts the only thing i have not tried is to see the active port
+
+  and i just curl it through the ssh and this is what i've got
+
+  ![curl response](pics/additionalEdits/2022-01-16%2016_44_34.png)
+
+  the curl for port 1337 is not that interesting although the port 8000 is but just incase i just copied all the output and put it inside of a text (i used sublime to copy paste and open it on the browser)
+
+  and these are the result
+
+  ![the web page of port 1337](pics/Screenshot_20220116_101201.png)
+
+  and
+
+  ![the web page of port 8000](pics/Screenshot_20220116_101250.png)
+
+  so nothing really big... but then i looked at the port 8000 one, the laravel web page it says it in the page that its laravel version 8 with php version 7.4.18
+
+  ![laravel 8 php 7.4.18](pics/additionalEdits/2022-01-16%2016_51_29.png)
+
+  and so... i just google it since i might find some exploit...\
+  and... exploit i got 
+
+  ![CVE-2021-3129](pics/Screenshot_20220116_101326.png)
+
+  its the [CVE-2021-3129](https://github.com/ambionics/laravel-exploits), i then just download the exploit by using\
+  `wget <script_raw_version_url>` 
+
+  ![downloading cve-2021-3129](pics/additionalEdits/2022-01-16%2016_54_33.png)
+
+  but then after seeing how the script works it seems like you need to download the [phpggc](https://github.com/ambionics/phpggc) to actually run the exploit 
+  
+  ![image of how to use the exploit](pics/additionalEdits/2022-01-16%2016_57_30.png)
+  
+  and so i download it
+
+  ![download php ggc](pics/additionalEdits/2022-01-16%2017_01_18.png)
+
+  but since the phpggc is not a single script i had to clone the github repo and zip the phpggc to send it to the strapi
+
+  i then ran python http.server and download the zip and script from the strapi ssh shell
+
+  ![uploading the scripts](pics/additionalEdits/2022-01-16%2017_07_36.png)
+
+  this time i used python http.server since i dont want to rename the file after uploading like when you tried to upload with the strapi
+
+  then after i download it from the strapi ssh i just unzip it
+
+  ![unzipping the phpggc](pics/additionalEdits/2022-01-16%2017_10_27.png)
+
+  then i tried to run the script, and...
+
+  ![python error on CVE-2021-3129](pics/additionalEdits/2022-01-16%2017_11_33.png)
+
+  i ran in to an error
+
+  after looking at the script i found the proble, the script would need python3.8 above but the python in the horizontall box was only 3.6 or 3.7 and since dataclasses was not a feature in 3.7 below it throws a no module name 'dataclasses' error (although CMIIW becs im not good with python version and cappabilities) and what i think i can do was just to change some stuff and hope it works
+
+  tldr; need to change the CVE-2021-3129 exploit to run on python 3.7 below
+
+  and change some stuff i did
+
+  ![removing the dataclasses returnning it back to normal python class](vids/Peek%202022-01-16%2010-41.gif)
+
+  then after those small tweaks its working as expected
+
+  ![CVE-2021-3129 fixed](pics/additionalEdits/2022-01-16%2017_19_01.png)
+
+  and then i just run the exploit, and...voila...
+
+  ![CVE-2021-3129 running](vids/Peek%202022-01-16%2010-50.gif)
+
+  then after testing it works with id i just print the flag
+
+  ![printing root flag](pics/additionalEdits/2022-01-16%2017_23_50.png)
+
+  and boom now you also got the flag
+
+  now i did tried to get a root bash... but then after couple of tries i just gave up
+
+  ![gave up1](pics/Screenshot_20220116_105904-1.png)
+
+  since its seems to complex and would have taken alot of time... and it did... becs its very uncomfortable to type and it gets doubled
+
+  ![finally got root shell](pics/additionalEdits/2022-01-16%2017_30_01.png)
+
+  but then in the end i still got the root ssh
+
+  ![final root ssh](pics/Screenshot_20220116_111142.png)
+
+  
+
+  

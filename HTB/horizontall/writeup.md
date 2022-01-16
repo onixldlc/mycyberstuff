@@ -86,7 +86,7 @@ with:
 
 - ### wfuzz
   
-  after looking for hours i finally gave up on finding any other clue on the js file, so instead googled on how to scan or bruteforce a sub domain and voila i found this [page](https://infinitelogins.com/2020/09/02/bruteforcing-subdomains-wfuzz/)
+  after looking for hours i finally gave up on finding any other clue on the js file, so instead googled on how to scan or bruteforce a sub domain, then i found this [page](https://infinitelogins.com/2020/09/02/bruteforcing-subdomains-wfuzz/)
 
   ![wfuzz how to page](pics/Screenshot_20220116_090623.png)
 
@@ -98,7 +98,7 @@ with:
 
   ![wfuzz result](pics/Screenshot_20220116_091444.png)
 
-  after knowing api-prod is an actuall subdomain i added it to my hosts file in the `/etc/hosts` with the same command to add domain name to the ip on the setup phase
+  after knowing api-prod is an actual subdomain i added it to my hosts file in the `/etc/hosts` with the same command to add domain name to the ip on the setup phase
   
   and i just add the `...api-prod.horiz...` to the front of the original domain name so it would result in
 
@@ -145,7 +145,7 @@ after getting disapointed because there is nothing important or interesting on t
 
     ![exploit-db page of strapi cms](pics/Screenshot_20220116_092335.png)
 
-- ### exploitation
+- ### user exploitation
 
   an unauthenticated rce exploit on CMS strapi 3.0.0-beta.17.4 which is the perfect exploit for this scenario... and running the exploit i did
 
@@ -213,6 +213,8 @@ after getting the user flag... now we need to privilege escalate our way to root
 - ### root recon
 
   yes another recon and it is alot of reconning but, atleast this time we use another tool and its called [linpeas](https://linpeas.sh/)
+  
+  - **root linpeas**
 
   so first of all lets upload the linpeas into the machine, this time i used the strapi to upload it and i will spare you the detail since i only drag and drop the linpeas script
 
@@ -236,6 +238,8 @@ after getting the user flag... now we need to privilege escalate our way to root
 
   ![all the reds in the output4](pics/additionalEdits/2022-01-16%2016_38_36.png)
 
+  - **root active ports**
+
   and after trying and googling all the red labled texts the only thing i have not tried is to see the active port
 
   and i just curl it through the ssh and this is what i've got
@@ -255,6 +259,8 @@ after getting the user flag... now we need to privilege escalate our way to root
   so nothing really big... but then i looked at the port 8000 one, the laravel web page it says it in the page that its laravel version 8 with php version 7.4.18
 
   ![laravel 8 php 7.4.18](pics/additionalEdits/2022-01-16%2016_51_29.png)
+
+- ### root exploitation
 
   and so... i just google it since i might find some exploit...\
   and... exploit i got 
@@ -308,11 +314,15 @@ after getting the user flag... now we need to privilege escalate our way to root
 
   ![CVE-2021-3129 running](vids/Peek%202022-01-16%2010-50.gif)
 
+- ### root flag
+
   then after testing it works with id i just print the flag
 
   ![printing root flag](pics/additionalEdits/2022-01-16%2017_23_50.png)
 
   and boom now you also got the flag
+
+- ### additional stuff
 
   now i did tried to get a root bash... but then after couple of tries i just gave up
 
